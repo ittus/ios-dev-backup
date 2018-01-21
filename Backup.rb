@@ -1,5 +1,6 @@
 require "spaceship"
 require 'json'
+require 'fileutils'
 
 Spaceship::Tunes.login(ARGV[0])
 
@@ -45,10 +46,18 @@ def get_app_info (app)
 	return app_info
 end
 
+
+def create_dir_if_not_exist (dirname)
+	unless File.directory?(dirname)
+	  FileUtils.mkdir_p(dirname)
+	end
+end
+
+create_dir_if_not_exist("data")
 Spaceship::Tunes::Application.all.collect do |app|
   puts "Processing ... #{app.name}"
   app_data = get_app_info(app)
-  save_to_json(app_data, "#{app.bundle_id}.json")
+  save_to_json(app_data, "data/#{app.bundle_id}.json")
 end
 
 # app = Spaceship::Tunes::Application.find("com.ittus.swingbattle")
